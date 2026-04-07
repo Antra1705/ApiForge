@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenAI, Type, Schema } from "@google/genai";
+import { NextResponse } from "next/server";
+import { GoogleGenAI, Type } from "@google/genai";
 
-export async function POST(req: NextRequest) {
+export async function POST(req) {
   try {
     const { prompt } = await req.json();
 
@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
     // Define the schema for structured output so we can render it directly
-    const responseSchema: Schema = {
+    const responseSchema = {
       type: Type.OBJECT,
       properties: {
         schema: {
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
         {
           role: "user",
           parts: [
-            { text: `You are an expert AI backend architect. Based on the user's application description, generate the core database schema (in Prisma format) and the primary REST API endpoints. \n\nApp Description: ${prompt}` }
+            { text: `You are an expert AI backend architect. Based on the user's application description, generate the core database schema (in Prisma format) and the primary REST API endpoints.\n\nCRITICAL: Format the Prisma schema with proper newlines (\\n) and indentation. DO NOT squash the schema into a single line.\n\nApp Description: ${prompt}` }
           ]
         }
       ],
@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
     const resultObj = JSON.parse(resultText);
 
     return NextResponse.json(resultObj);
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to generate API:", error);
     return NextResponse.json({ error: error.message || "Failed to generate API securely." }, { status: 500 });
   }

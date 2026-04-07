@@ -85,7 +85,7 @@
 
   /* Glass and gradient rule */
   .btn-primary {
-    @apply bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-lg transition-all duration-300 hover:opacity-90;
+    @apply bg-primary text-on-primary rounded-lg transition-all duration-300 hover:opacity-90;
   }
   .btn-secondary {
     @apply bg-surface-container-highest border border-outline-variant/15 text-primary-fixed-dim rounded-lg transition-colors hover:bg-surface-bright;
@@ -99,7 +99,7 @@
     @apply bg-surface-container-lowest border border-outline-variant/20 rounded-lg text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all;
   }
   .focus-glow {
-    @apply focus:shadow-[0_0_12px_rgba(173,198,255,0.4)];
+    @apply focus:shadow-none;
   }
 
   /* Typography extensions */
