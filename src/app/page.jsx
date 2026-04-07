@@ -349,17 +349,33 @@ function ComingSoonState({ title, icon }) {
 }
 
 function SettingsState() {
+  const [dbEngine, setDbEngine] = useState("postgres");
+  const [projectName, setProjectName] = useState("Marketplace API Backend");
+  const [stage, setStage] = useState("Development");
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSave = () => {
+    setIsSaving(true);
+    setTimeout(() => setIsSaving(false), 1200);
+  };
+
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col h-full overflow-hidden">
-      <header className="px-6 py-4 border-b border-surface/50 flex items-center gap-3 z-10 glass-overlay rounded-none">
+    <motion.div 
+      initial={{ opacity: 0 }} 
+      animate={{ opacity: 1 }} 
+      exit={{ opacity: 0 }} 
+      className="flex-1 flex flex-col min-h-0 h-full overflow-hidden bg-surface-container-high"
+    >
+      <header className="px-6 py-4 border-b border-surface/50 flex items-center gap-3 z-10 glass-overlay rounded-none shrink-0">
         <div className="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-on-surface-variant border border-outline-variant/20">
           <Settings size={18} />
         </div>
         <h2 className="text-lg font-medium text-on-surface">Project Settings</h2>
       </header>
-      <div className="flex-1 p-8 overflow-y-auto w-full max-w-4xl mx-auto flex flex-col gap-8">
+      <div className="flex-1 overflow-y-auto w-full relative z-0">
+        <div className="max-w-4xl mx-auto p-8 flex flex-col gap-8 pb-24">
         
-        <div className="space-y-6 bg-surface-container-low p-8 rounded-xl border border-outline-variant/15 relative overflow-hidden">
+        <div className="space-y-6 bg-surface-container-low p-8 rounded-xl border border-outline-variant/15 relative">
           <div className="absolute top-0 left-0 w-full h-1 bg-primary opacity-50" />
           <h3 className="text-lg font-medium flex items-center gap-2"><Globe size={18} className="text-primary"/> General Configuration</h3>
           
@@ -370,31 +386,46 @@ function SettingsState() {
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-on-surface-variant">Environment Stage</label>
-              <select className="w-full input-inset p-3 bg-surface-container-highest border-transparent rounded-lg text-on-surface focus:border-primary/50 transition-colors">
-                <option>Development</option>
-                <option>Staging</option>
-                <option>Production</option>
+              <select 
+                value={stage}
+                onChange={(e) => setStage(e.target.value)}
+                className="w-full input-inset p-3 bg-surface-container-highest border-transparent rounded-lg text-on-surface focus:border-primary/50 transition-colors"
+              >
+                <option value="Development">Development</option>
+                <option value="Staging">Staging</option>
+                <option value="Production">Production</option>
               </select>
             </div>
           </div>
         </div>
 
-        <div className="space-y-6 bg-surface-container-low p-8 rounded-xl border border-outline-variant/15 relative overflow-hidden">
+        <div className="space-y-6 bg-surface-container-low p-8 rounded-xl border border-outline-variant/15 relative">
           <h3 className="text-lg font-medium flex items-center gap-2"><DatabaseZap size={18} className="text-secondary"/> Database Engine</h3>
           
           <div className="grid grid-cols-3 gap-4">
-            <div className="p-4 border-2 border-primary/40 bg-surface-bright rounded-lg cursor-pointer flex flex-col items-center justify-center gap-3 relative">
-               <div className="absolute top-2 right-2 w-3 h-3 bg-primary rounded-full animate-pulse" />
-               <Database size={24} className="text-primary" />
-               <span className="font-medium text-primary">PostgreSQL</span>
+            <div 
+              onClick={() => setDbEngine("postgres")}
+              className={`p-4 border-2 rounded-lg cursor-pointer flex flex-col items-center justify-center gap-3 relative transition-all ${dbEngine === "postgres" ? "border-primary/40 bg-surface-bright" : "border-outline-variant/10 bg-surface-container-highest opacity-60 hover:opacity-100"}`}
+            >
+               {dbEngine === "postgres" && <div className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full animate-pulse" />}
+               <Database size={24} className={dbEngine === "postgres" ? "text-primary" : "text-on-surface-variant"} />
+               <span className={`font-medium ${dbEngine === "postgres" ? "text-primary" : "text-on-surface-variant"}`}>PostgreSQL</span>
             </div>
-            <div className="p-4 border border-outline-variant/20 hover:border-outline-variant/40 bg-surface-container-highest rounded-lg cursor-pointer flex flex-col items-center justify-center gap-3 transition-colors">
-               <Layers size={24} className="text-on-surface-variant" />
-               <span className="font-medium text-on-surface-variant">MongoDB</span>
+            <div 
+              onClick={() => setDbEngine("mongodb")}
+              className={`p-4 border-2 rounded-lg cursor-pointer flex flex-col items-center justify-center gap-3 relative transition-all ${dbEngine === "mongodb" ? "border-secondary/40 bg-surface-bright" : "border-outline-variant/10 bg-surface-container-highest opacity-60 hover:opacity-100"}`}
+            >
+               {dbEngine === "mongodb" && <div className="absolute top-2 right-2 w-2 h-2 bg-secondary rounded-full animate-pulse" />}
+               <Layers size={24} className={dbEngine === "mongodb" ? "text-secondary" : "text-on-surface-variant"} />
+               <span className={`font-medium ${dbEngine === "mongodb" ? "text-secondary" : "text-on-surface-variant"}`}>MongoDB</span>
             </div>
-            <div className="p-4 border border-outline-variant/20 hover:border-outline-variant/40 bg-surface-container-highest rounded-lg cursor-pointer flex flex-col items-center justify-center gap-3 transition-colors">
-               <Server size={24} className="text-on-surface-variant" />
-               <span className="font-medium text-on-surface-variant">MySQL</span>
+            <div 
+              onClick={() => setDbEngine("mysql")}
+              className={`p-4 border-2 rounded-lg cursor-pointer flex flex-col items-center justify-center gap-3 relative transition-all ${dbEngine === "mysql" ? "border-tertiary/40 bg-surface-bright" : "border-outline-variant/10 bg-surface-container-highest opacity-60 hover:opacity-100"}`}
+            >
+               {dbEngine === "mysql" && <div className="absolute top-2 right-2 w-2 h-2 bg-tertiary rounded-full animate-pulse" />}
+               <Server size={24} className={dbEngine === "mysql" ? "text-tertiary" : "text-on-surface-variant"} />
+               <span className={`font-medium ${dbEngine === "mysql" ? "text-tertiary" : "text-on-surface-variant"}`}>MySQL</span>
             </div>
           </div>
 
@@ -405,10 +436,17 @@ function SettingsState() {
         </div>
 
         <div className="flex justify-end pt-4">
-           <button className="btn-primary px-6 py-2.5 rounded-lg flex items-center gap-2"><Save size={18} /> Save Configuration</button>
+           <button 
+            onClick={handleSave}
+            disabled={isSaving}
+            className={`btn-primary px-6 py-2.5 rounded-lg flex items-center gap-2 transition-all active:scale-95 ${isSaving ? "opacity-70 cursor-wait" : ""}`}
+           >
+             {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+             {isSaving ? "Saving Changes..." : "Save Configuration"}
+           </button>
         </div>
-
       </div>
+    </div>
     </motion.div>
   );
 }
@@ -544,8 +582,8 @@ function DocsState({ endpoints = [] }) {
 
 function AuthRulesState() {
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col h-full overflow-hidden">
-      <header className="px-6 py-4 border-b border-surface/50 flex flex-col gap-1 z-10 glass-overlay rounded-none">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col min-h-0 overflow-hidden bg-surface-container-high">
+      <header className="px-6 py-4 border-b border-surface/50 flex flex-col gap-1 z-10 glass-overlay rounded-none shrink-0">
         <div className="flex justify-between items-center w-full">
            <div className="flex items-center gap-3">
              <div className="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-primary border border-outline-variant/20">
@@ -559,7 +597,7 @@ function AuthRulesState() {
         </div>
       </header>
 
-      <div className="flex-1 p-8 overflow-y-auto w-full max-w-5xl mx-auto grid grid-cols-3 gap-8">
+      <div className="flex-1 p-8 overflow-y-auto w-full max-w-5xl mx-auto grid grid-cols-3 gap-8 min-h-0 relative z-0">
          {/* Left col: Auth methods */}
          <div className="col-span-1 flex flex-col gap-6">
             <div className="bg-surface-container-low p-5 rounded-xl border border-outline-variant/15 flex flex-col gap-4">
@@ -587,14 +625,14 @@ function AuthRulesState() {
              <h3 className="font-medium text-lg flex items-center gap-2"><Lock size={18} className="text-primary-fixed-dim" /> Role Based Access Control</h3>
              
              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant/15 relative overflow-hidden group">
+                <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant/15 relative group">
                    
                    <h4 className="text-xl font-medium text-on-surface mb-2 flex items-center gap-2">Admin <span className="text-[10px] uppercase font-mono bg-error-container text-error rounded px-1.5 py-0.5">High Priv</span></h4>
                    <p className="text-sm text-on-surface-variant mb-6 h-10">Unrestricted access. Can modify roles and delete resources.</p>
                    <div className="text-xs font-mono text-on-surface-variant bg-surface p-2 rounded">Policy: Allow *:*</div>
                 </div>
 
-                <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant/15 relative overflow-hidden">
+                <div className="bg-surface-container-low p-6 rounded-xl border border-outline-variant/15 relative">
                    <h4 className="text-xl font-medium text-on-surface mb-2 flex items-center gap-2">User <span className="text-[10px] uppercase font-mono bg-primary-fixed-variant text-primary-fixed rounded px-1.5 py-0.5">Standard</span></h4>
                    <p className="text-sm text-on-surface-variant mb-6 h-10">Authorized to manage own resources and perform POST/GET actions.</p>
                    <div className="text-xs font-mono text-on-surface-variant bg-surface p-2 rounded">Policy: Allow owner:*</div>
